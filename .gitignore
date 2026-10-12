@@ -42,6 +42,15 @@
 build/
 Build/
 build-*/
+cmake-build-*/
+
+# IDE configs
+.idea/
+.vs/
+*.user
+
+# Dear ImGui runtime files
+imgui.ini
 
 # CMake generated files
 CMakeFiles/
