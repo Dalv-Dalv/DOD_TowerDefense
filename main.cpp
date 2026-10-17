@@ -1,38 +1,31 @@
+#include <memory>
+
+#include "IArchitecture.h"
 #include "raylib.h"
 #include "imgui.h"
 #include "rlImGui.h"
+#include "UIManager.h"
+
+using namespace std;
 
 int main() {
-    InitWindow(800, 450, "DOD_TowerDefense");
-    SetTargetFPS(60);
+    constexpr int screenWidth = 1200;
+    constexpr int screenHeight = 800;
+    InitWindow(screenWidth, screenHeight, "DOD_TowerDefense");
 
-    // Initialize the ImGui binding after raylib's InitWindow
-    rlImGuiSetup(true);
-
-    bool showWindow = true;
+    UIManager uiManager;
+    uiManager.initialize();
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // 1. Start the ImGui context
-        rlImGuiBegin();
-
-        // 2. Draw an ImGui window
-        if (showWindow) {
-            ImGui::Begin("Tower Defense Debug", &showWindow);
-            ImGui::Text("ImGui is successfully linked with Raylib!");
-            ImGui::End();
-        }
-
-        // 3. End ImGui context (this actually draws the UI to the screen)
-        rlImGuiEnd();
+        uiManager.render();
 
         EndDrawing();
     }
 
-    // Clean up ImGui before closing the window
-    rlImGuiShutdown();
+    uiManager.shutdown();
     CloseWindow();
 
     return 0;
