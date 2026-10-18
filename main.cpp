@@ -6,6 +6,9 @@
 #include "rlImGui.h"
 #include "UIManager.h"
 
+//rares
+#include "oop/oopslider.h"
+
 using namespace std;
 
 int main() {
@@ -16,10 +19,23 @@ int main() {
     UIManager uiManager;
     uiManager.initialize();
 
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
 
+    //rares
+    oopslider simulation;
+    simulation.initialize(uiManager.getObjectCount(), screenWidth, screenHeight);
+
+    uiManager.onObjectCountChanged([&simulation](int count)
+    {
+        simulation.setObjectCount(count);
+    });
+
+    while (!WindowShouldClose()) {
+        simulation.update(GetFrameTime(), uiManager.getSimSpeed());
+
+        BeginDrawing();
+        ClearBackground(WHITE);
+
+        simulation.render();
         uiManager.render();
 
         EndDrawing();
