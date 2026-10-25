@@ -40,6 +40,7 @@ add_executable(DOD_TowerDefense main.cpp
         UIManager.cpp
         UIManager.h
         IArchitecture.h
+        dod/DODArchitecture.cpp
         oop/Object.h
         oop/Shape.h
         oop/Circle.h
