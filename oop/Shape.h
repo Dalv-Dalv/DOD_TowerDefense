@@ -40,6 +40,10 @@ public:
         }
     }
 
+    float getCollisionRadius() const override {
+        return size;
+    }
+
     void render() const override {
         RenderShapedObject(position, shape, color, size);
     }
