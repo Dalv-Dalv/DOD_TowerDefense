@@ -50,8 +50,6 @@ int main() {
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
 
-        uiManager.setMemoryUsageBytes(simulation.getMemoryUsageBytes());
-
         BeginDrawing();
         ClearBackground(WHITE);
 
