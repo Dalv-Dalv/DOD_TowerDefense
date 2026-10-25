@@ -32,5 +32,7 @@ public:
 
     virtual void render() const = 0;
 
+    virtual void handleWallCollision(int width, int height) = 0;
+
 };
 #endif //DOD_TOWERDEFENSE_OBJECT_H

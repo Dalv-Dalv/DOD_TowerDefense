@@ -65,9 +65,13 @@ void OOPslider::setObjectCount(int count) {
 
 void OOPslider::update(float deltaTime, float speedMultiplier)
 {
+    screenWidth = GetScreenWidth();
+    screenHeight = GetScreenHeight();
+
     for (auto& object : objects)
     {
         object->update(deltaTime, speedMultiplier);
+        object->handleWallCollision(screenWidth, screenHeight);
     }
 }
 
