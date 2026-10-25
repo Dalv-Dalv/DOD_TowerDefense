@@ -38,6 +38,10 @@ public:
         }
     }
 
+    float getCollisionRadius() const override {
+        return size;
+    }
+
 
 };
 

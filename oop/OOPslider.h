@@ -17,6 +17,16 @@ private:
     int screenWidth;
     int screenHeight;
 
+
+    static constexpr int CELL_SIZE = 8;
+    vector<int> head;
+    vector<int> next;
+
+    void buildGrid();
+    void checkCollisions();
+    void handleCollision(Object& a, Object& b);
+
+
 public:
     void initialize(int initialCount, int screenWidth, int screenHeight) override;
     void update(float deltaTime, float speedMultiplier) override;
