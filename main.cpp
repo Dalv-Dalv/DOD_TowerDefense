@@ -32,6 +32,8 @@ int main() {
     while (!WindowShouldClose()) {
         simulation.update(GetFrameTime(), uiManager.getSimSpeed());
 
+        uiManager.setMemoryUsageBytes(simulation.getMemoryUsageBytes());
+
         BeginDrawing();
         ClearBackground(WHITE);
 

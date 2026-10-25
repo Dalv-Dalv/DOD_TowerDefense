@@ -218,5 +218,27 @@ void OOPslider::handleCollision(Object &a, Object &b) {
 
 //urmeaza
 size_t OOPslider::getMemoryUsageBytes() {
-    return 0;
+    static_assert(sizeof(Circle) == sizeof(Square));
+    static_assert(sizeof(Circle) == sizeof(Triangle));
+    static_assert(sizeof(Circle) == sizeof(Star));
+
+    size_t memory = sizeof(*this);
+
+    memory += objects.capacity() * sizeof(unique_ptr<Object>);
+    memory += objects.size() * sizeof(Circle);
+
+    memory += head.capacity() * sizeof(int);
+    memory += next.capacity() * sizeof(int);
+
+    return memory;static_assert(sizeof(Circle) == sizeof(Square));
+    static_assert(sizeof(Circle) == sizeof(Triangle));
+    static_assert(sizeof(Circle) == sizeof(Star));
+
+    memory += objects.capacity() * sizeof(unique_ptr<Object>);
+    memory += objects.size() * sizeof(Circle);
+
+    memory += head.capacity() * sizeof(int);
+    memory += next.capacity() * sizeof(int);
+
+    return memory;
 }
