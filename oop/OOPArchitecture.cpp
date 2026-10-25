@@ -1,5 +1,4 @@
-
-#include "OOPslider.h"
+#include "OOPArchitecture.h"
 #include "Circle.h"
 #include "Square.h"
 #include "Triangle.h"
@@ -10,22 +9,19 @@
 
 using namespace std;
 
-void OOPslider::initialize(int initialCount, int width, int height)
-{
-
+void OOPArchitecture::initialize(int initialCount, int width, int height) {
     this->screenWidth = width;
-    this->screenHeight =height;
+    this->screenHeight = height;
 
     setObjectCount(initialCount);
 }
 
 
-void OOPslider::setObjectCount(int count) {
+void OOPArchitecture::setObjectCount(int count) {
     if (count < 0) count = 0;
     if (count > 100000) count = 100000;
 
-    while (objects.size() > count)
-    {
+    while (objects.size() > count) {
         objects.pop_back();
     }
 
@@ -47,8 +43,7 @@ void OOPslider::setObjectCount(int count) {
         float size = GetRandomValue(2, 4);
         int shape = GetRandomValue(0, 3);
 
-        switch (shape)
-        {
+        switch (shape) {
             case 0:
                 objects.push_back(make_unique<Circle>(position, movement, color, size));
                 break;
@@ -66,13 +61,11 @@ void OOPslider::setObjectCount(int count) {
 }
 
 
-void OOPslider::update(float deltaTime, float speedMultiplier)
-{
+void OOPArchitecture::update(float deltaTime, float speedMultiplier) {
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
 
-    for (auto& object : objects)
-    {
+    for (auto &object: objects) {
         object->update(deltaTime, speedMultiplier);
         object->handleWallCollision(screenWidth, screenHeight);
     }
@@ -86,15 +79,14 @@ void OOPslider::update(float deltaTime, float speedMultiplier)
 }
 
 
-
-void OOPslider::render() {
-    for (auto& object : objects) {
+void OOPArchitecture::render() {
+    for (auto &object: objects) {
         object->render();
     }
 }
 
 
-void OOPslider::buildGrid() {
+void OOPArchitecture::buildGrid() {
     if (screenWidth <= 0 || screenHeight <= 0) return;
 
     int columns = (screenWidth + CELL_SIZE - 1) / CELL_SIZE;
@@ -116,7 +108,7 @@ void OOPslider::buildGrid() {
     }
 }
 
-void OOPslider::checkCollisions() {
+void OOPArchitecture::checkCollisions() {
     int columns = (screenWidth + CELL_SIZE - 1) / CELL_SIZE;
     int rows = (screenHeight + CELL_SIZE - 1) / CELL_SIZE;
 
@@ -164,7 +156,7 @@ void OOPslider::checkCollisions() {
 }
 
 
-void OOPslider::handleCollision(Object &a, Object &b) {
+void OOPArchitecture::handleCollision(Object &a, Object &b) {
     Vector2 PosA = a.getPosition();
     Vector2 PosB = b.getPosition();
 
@@ -217,7 +209,7 @@ void OOPslider::handleCollision(Object &a, Object &b) {
 
 
 //urmeaza
-size_t OOPslider::getMemoryUsageBytes() {
+size_t OOPArchitecture::getMemoryUsageBytes() {
     static_assert(sizeof(Circle) == sizeof(Square));
     static_assert(sizeof(Circle) == sizeof(Triangle));
     static_assert(sizeof(Circle) == sizeof(Star));

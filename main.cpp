@@ -7,7 +7,8 @@
 #include "UIManager.h"
 
 //rares
-#include "oop/OOPslider.h"
+#include "DoD/DoDArchitecture.h"
+#include "OOP/OOPArchitecture.h"
 
 using namespace std;
 
@@ -19,25 +20,47 @@ int main() {
     UIManager uiManager;
     uiManager.initialize();
 
+    IArchitecture* simulation;
+    if (uiManager.getIsOOP()) simulation = new OOPArchitecture();
+    else simulation = new DoDArchitecture();
 
-    //rares
-    OOPslider simulation;
-    simulation.initialize(uiManager.getObjectCount(), screenWidth, screenHeight);
+    simulation->initialize(uiManager.getObjectCount(), screenWidth, screenHeight);
 
-    uiManager.onObjectCountChanged([&simulation](int count)
-    {
-        simulation.setObjectCount(count);
+    float simSpeed = 1.0f;
+
+    uiManager.onIsOOPChanged([&simulation, &uiManager](bool isOOP) {
+        delete simulation;
+        if (isOOP) {
+            simulation = new OOPArchitecture();
+        } else {
+            simulation = new DoDArchitecture();
+        }
+        simulation->initialize(uiManager.getObjectCount(), screenWidth, screenHeight);
+    });
+
+    uiManager.onObjectCountChanged([&simulation](int count) {
+        if (simulation == nullptr) return;
+        simulation->setObjectCount(count);
+    });
+
+    uiManager.onSpeedChanged([&simSpeed](float speed) {
+        simSpeed = speed;
     });
 
     while (!WindowShouldClose()) {
-        simulation.update(GetFrameTime(), uiManager.getSimSpeed());
+        float deltaTime = GetFrameTime();
 
         uiManager.setMemoryUsageBytes(simulation.getMemoryUsageBytes());
 
         BeginDrawing();
         ClearBackground(WHITE);
 
-        simulation.render();
+        if (simulation != nullptr) {
+            simulation->update(deltaTime, simSpeed);
+            simulation->render();
+            uiManager.setMemoryUsageBytes(simulation->getMemoryUsageBytes());
+        }
+
         uiManager.render();
 
         EndDrawing();

@@ -1,4 +1,3 @@
-
 #ifndef DOD_TOWERDEFENSE_OOPSLIDER_H
 #define DOD_TOWERDEFENSE_OOPSLIDER_H
 
@@ -9,11 +8,9 @@
 
 using namespace std;
 
-class OOPslider : public IArchitecture
-{
-
+class OOPArchitecture : public IArchitecture {
 private:
-    vector<unique_ptr<Object>> objects;
+    vector<unique_ptr<Object> > objects;
     int screenWidth;
     int screenHeight;
 
@@ -29,9 +26,13 @@ private:
 
 public:
     void initialize(int initialCount, int screenWidth, int screenHeight) override;
+
     void update(float deltaTime, float speedMultiplier) override;
+
     void render() override;
+
     void setObjectCount(int count) override;
+
     size_t getMemoryUsageBytes() override;
 };
 

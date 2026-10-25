@@ -1,15 +1,17 @@
-
 #ifndef DOD_TOWERDEFENSE_SHAPE_H
 #define DOD_TOWERDEFENSE_SHAPE_H
 
 #include "Object.h"
+#include "../Shared/RenderUtils.h"
 
 class Shape : public Object {
 protected:
     float size;
 
 public:
-    Shape(Vector2 position, Vector2 movement, Color color, ShapeType shapeType, float size): Object(position, movement, color, shapeType), size(size) {}
+    Shape(Vector2 position, Vector2 movement, Color color, ShapeType shapeType, float size) : Object(position, movement,
+        color, shapeType), size(size) {
+    }
 
 
     void handleWallCollision(int width, int height) override {
@@ -42,7 +44,9 @@ public:
         return size;
     }
 
-
+    void render() const override {
+        RenderShapedObject(position, shape, color, size);
+    }
 };
 
 #endif //DOD_TOWERDEFENSE_SHAPE_H
