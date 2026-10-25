@@ -2,9 +2,8 @@
 #include <vector>
 #include <cstdint>
 #include "raylib.h"
+#include "../Shared/ShapeType.h"
 #include "../IArchitecture.h"
-
-enum ShapeType : uint8_t { SQUARE = 0, CIRCLE, TRIANGLE, STAR, COUNT };
 
 struct SimpleGrid {
     static constexpr int CELL_SIZE = 8;

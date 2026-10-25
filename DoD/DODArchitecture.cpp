@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+#include "../Shared/RenderUtils.h"
+
 void SimpleGrid::Clear() {
     std::fill(count, count + TOTAL_CELLS, 0);
 }
@@ -26,22 +28,22 @@ void DoDArchitecture::initialize(int initialCount, int width, int height) {
 
     for (int i = 0; i < NUM_ELEMENTS; ++i) {
         positions[i] = {
-            RADIUS + (float)(rand() % (int)(screenWidth - DIAMETER)),
-            RADIUS + (float)(rand() % (int)(screenHeight - DIAMETER))
+            RADIUS + (float) (rand() % (int) (screenWidth - DIAMETER)),
+            RADIUS + (float) (rand() % (int) (screenHeight - DIAMETER))
         };
 
-        float angle = ((float)rand() / (float)RAND_MAX) * 6.2831853f;
-        float speed = 25.0f + ((float)rand() / (float)RAND_MAX) * 35.0f;
-        velocities[i] = { cosf(angle) * speed, sinf(angle) * speed };
+        float angle = ((float) rand() / (float) RAND_MAX) * 6.2831853f;
+        float speed = 25.0f + ((float) rand() / (float) RAND_MAX) * 35.0f;
+        velocities[i] = {cosf(angle) * speed, sinf(angle) * speed};
 
         colors[i] = Color{
-            (unsigned char)(100 + rand() % 155),
-            (unsigned char)(100 + rand() % 155),
-            (unsigned char)(100 + rand() % 155),
+            (unsigned char) (100 + rand() % 155),
+            (unsigned char) (100 + rand() % 155),
+            (unsigned char) (100 + rand() % 155),
             255
         };
 
-        shapes[i] = static_cast<ShapeType>(rand() % COUNT);
+        shapes[i] = static_cast<ShapeType>(rand() % SHAPES_COUNT);
     }
 }
 
@@ -61,7 +63,7 @@ size_t DoDArchitecture::getMemoryUsageBytes() {
     return mem;
 }
 
-inline void DoDArchitecture::Collide(Vector2& pos1, Vector2& vel1, Vector2& pos2, Vector2& vel2) {
+inline void DoDArchitecture::Collide(Vector2 &pos1, Vector2 &vel1, Vector2 &pos2, Vector2 &vel2) {
     float dx = pos2.x - pos1.x;
     float dy = pos2.y - pos1.y;
     float distSq = dx * dx + dy * dy;
@@ -109,15 +111,15 @@ void DoDArchitecture::update(float dt, float speedMultiplier) {
             velocities[i].y = -velocities[i].y;
         }
 
-        int cx = std::clamp((int)(positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
-        int cy = std::clamp((int)(positions[i].y / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_ROWS - 1);
+        int cx = std::clamp((int) (positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
+        int cy = std::clamp((int) (positions[i].y / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_ROWS - 1);
         grid.Add(cx, cy, i);
     }
 
-    #pragma omp parallel for
+#pragma omp parallel for
     for (int i = 0; i < activeCount; ++i) {
-        int cx = std::clamp((int)(positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
-        int cy = std::clamp((int)(positions[i].y / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_ROWS - 1);
+        int cx = std::clamp((int) (positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
+        int cy = std::clamp((int) (positions[i].y / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_ROWS - 1);
 
         int minX = std::max(0, cx - 1), maxX = std::min(SimpleGrid::GRID_COLS - 1, cx + 1);
         int minY = std::max(0, cy - 1), maxY = std::min(SimpleGrid::GRID_ROWS - 1, cy + 1);
@@ -141,34 +143,6 @@ void DoDArchitecture::render() {
     constexpr float size = RADIUS;
 
     for (int i = 0; i < activeCount; ++i) {
-        Vector2 pos = positions[i];
-        Color col = colors[i];
-
-        switch (shapes[i]) {
-            case SQUARE: {
-                Vector2 s = { pos.x - size, pos.y - size };
-                Vector2 l = { 2.0f * size, 2.0f * size };
-                DrawRectangleV(s, l, col);
-                break;
-            }
-            case CIRCLE: {
-                DrawCircleV(pos, size, col);
-                break;
-            }
-            case TRIANGLE: {
-                Vector2 a = { pos.x, pos.y - size };
-                Vector2 b = { pos.x - size, pos.y + size };
-                Vector2 c = { pos.x + size, pos.y + size };
-                DrawTriangle(a, b, c, col);
-                break;
-            }
-            case STAR: {
-                DrawPoly(pos, 3, size, 0.0f, col);
-                DrawPoly(pos, 3, size, 60.0f, col);
-                break;
-            }
-            default:
-                break;
-        }
+        RenderShapedObject(positions[i], shapes[i], colors[i], size);
     }
 }
