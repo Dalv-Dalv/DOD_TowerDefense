@@ -113,28 +113,37 @@ void DoDArchitecture::update(float dt) {
 }
 
 void DoDArchitecture::render() {
-    rlBegin(RL_LINES);
+    constexpr float size = RADIUS;
+
     for (int i = 0; i < NUM_ELEMENTS; ++i) {
-        rlColor4ub(colors[i].r, colors[i].g, colors[i].b, 255);
-        float px = positions[i].x;
-        float py = positions[i].y;
+        Vector2 pos = positions[i];
+        Color col = colors[i];
 
         switch (shapes[i]) {
-            case SQUARE:
-                rlVertex2f(px - RADIUS, py); rlVertex2f(px + RADIUS, py);
+            case SQUARE: {
+                Vector2 s = { pos.x - size, pos.y - size };
+                Vector2 l = { 2.0f * size, 2.0f * size };
+                DrawRectangleV(s, l, col);
                 break;
-            case CIRCLE:
-                rlVertex2f(px, py - RADIUS); rlVertex2f(px, py + RADIUS);
+            }
+            case CIRCLE: {
+                DrawCircleV(pos, size, col);
                 break;
-            case TRIANGLE:
-                rlVertex2f(px - RADIUS, py - RADIUS); rlVertex2f(px + RADIUS, py + RADIUS);
+            }
+            case TRIANGLE: {
+                Vector2 a = { pos.x, pos.y - size };
+                Vector2 b = { pos.x - size, pos.y + size };
+                Vector2 c = { pos.x + size, pos.y + size };
+                DrawTriangle(a, b, c, col);
                 break;
-            case STAR:
-                rlVertex2f(px - RADIUS, py); rlVertex2f(px + RADIUS, py);
-                rlVertex2f(px, py - RADIUS); rlVertex2f(px, py + RADIUS);
+            }
+            case STAR: {
+                DrawPoly(pos, 3, size, 0.0f, col);
+                DrawPoly(pos, 3, size, 60.0f, col);
                 break;
-            default: break;
+            }
+            default: 
+                break;
         }
     }
-    rlEnd();
 }
