@@ -39,6 +39,7 @@ target_link_libraries(raylib_imgui PUBLIC raylib)
 add_executable(DOD_TowerDefense main.cpp
         UIManager.cpp
         UIManager.h
-        IArchitecture.h)
+        IArchitecture.h
+        dod/DODArchitecture.cpp)
 
 target_link_libraries(DOD_TowerDefense PRIVATE raylib raylib_imgui)

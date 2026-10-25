@@ -1,5 +1,4 @@
 #include "DoDArchitecture.h"
-#include "rlgl.h"
 #include <cmath>
 #include <cstdlib>
 #include <algorithm>
@@ -15,10 +14,11 @@ void SimpleGrid::Add(int cx, int cy, int id) {
     }
 }
 
-DoDArchitecture::DoDArchitecture(int width, int height)
-    : screenWidth(width), screenHeight(height) {}
+void DoDArchitecture::initialize(int initialCount, int width, int height) {
+    screenWidth = width;
+    screenHeight = height;
+    setObjectCount(initialCount);
 
-void DoDArchitecture::init() {
     positions.resize(NUM_ELEMENTS);
     velocities.resize(NUM_ELEMENTS);
     colors.resize(NUM_ELEMENTS);
@@ -30,8 +30,8 @@ void DoDArchitecture::init() {
             RADIUS + (float)(rand() % (int)(screenHeight - DIAMETER))
         };
 
-        float angle = ((float)rand() / RAND_MAX) * 6.2831853f;
-        float speed = 25.0f + ((float)rand() / RAND_MAX) * 35.0f;
+        float angle = ((float)rand() / (float)RAND_MAX) * 6.2831853f;
+        float speed = 25.0f + ((float)rand() / (float)RAND_MAX) * 35.0f;
         velocities[i] = { cosf(angle) * speed, sinf(angle) * speed };
 
         colors[i] = Color{
@@ -45,6 +45,22 @@ void DoDArchitecture::init() {
     }
 }
 
+void DoDArchitecture::setObjectCount(int newCount) {
+    if (newCount < 0) newCount = 0;
+    if (newCount > NUM_ELEMENTS) newCount = NUM_ELEMENTS;
+    activeCount = newCount;
+}
+
+size_t DoDArchitecture::getMemoryUsageBytes() {
+    size_t mem = 0;
+    mem += positions.capacity() * sizeof(Vector2);
+    mem += velocities.capacity() * sizeof(Vector2);
+    mem += colors.capacity() * sizeof(Color);
+    mem += shapes.capacity() * sizeof(ShapeType);
+    mem += sizeof(grid);
+    return mem;
+}
+
 inline void DoDArchitecture::Collide(Vector2& pos1, Vector2& vel1, Vector2& pos2, Vector2& vel2) {
     float dx = pos2.x - pos1.x;
     float dy = pos2.y - pos1.y;
@@ -56,32 +72,41 @@ inline void DoDArchitecture::Collide(Vector2& pos1, Vector2& vel1, Vector2& pos2
         float ny = dy / dist;
 
         float overlap = 0.5f * (DIAMETER - dist);
-        pos1.x -= nx * overlap; pos1.y -= ny * overlap;
-        pos2.x += nx * overlap; pos2.y += ny * overlap;
+        pos1.x -= nx * overlap;
+        pos1.y -= ny * overlap;
+        pos2.x += nx * overlap;
+        pos2.y += ny * overlap;
 
         float p = nx * (vel1.x - vel2.x) + ny * (vel1.y - vel2.y);
-        vel1.x -= p * nx; vel1.y -= p * ny;
-        vel2.x += p * nx; vel2.y += p * ny;
+        vel1.x -= p * nx;
+        vel1.y -= p * ny;
+        vel2.x += p * nx;
+        vel2.y += p * ny;
     }
 }
 
-void DoDArchitecture::update(float dt) {
+void DoDArchitecture::update(float dt, float speedMultiplier) {
+    float effectiveDt = dt * speedMultiplier;
     grid.Clear();
 
-    for (int i = 0; i < NUM_ELEMENTS; ++i) {
-        positions[i].x += velocities[i].x * dt;
-        positions[i].y += velocities[i].y * dt;
+    for (int i = 0; i < activeCount; ++i) {
+        positions[i].x += velocities[i].x * effectiveDt;
+        positions[i].y += velocities[i].y * effectiveDt;
 
         if (positions[i].x <= RADIUS) {
-            positions[i].x = RADIUS; velocities[i].x = -velocities[i].x;
+            positions[i].x = RADIUS;
+            velocities[i].x = -velocities[i].x;
         } else if (positions[i].x >= screenWidth - RADIUS) {
-            positions[i].x = screenWidth - RADIUS; velocities[i].x = -velocities[i].x;
+            positions[i].x = screenWidth - RADIUS;
+            velocities[i].x = -velocities[i].x;
         }
 
         if (positions[i].y <= RADIUS) {
-            positions[i].y = RADIUS; velocities[i].y = -velocities[i].y;
+            positions[i].y = RADIUS;
+            velocities[i].y = -velocities[i].y;
         } else if (positions[i].y >= screenHeight - RADIUS) {
-            positions[i].y = screenHeight - RADIUS; velocities[i].y = -velocities[i].y;
+            positions[i].y = screenHeight - RADIUS;
+            velocities[i].y = -velocities[i].y;
         }
 
         int cx = std::clamp((int)(positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
@@ -90,7 +115,7 @@ void DoDArchitecture::update(float dt) {
     }
 
     #pragma omp parallel for
-    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+    for (int i = 0; i < activeCount; ++i) {
         int cx = std::clamp((int)(positions[i].x / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_COLS - 1);
         int cy = std::clamp((int)(positions[i].y / SimpleGrid::CELL_SIZE), 0, SimpleGrid::GRID_ROWS - 1);
 
@@ -115,7 +140,7 @@ void DoDArchitecture::update(float dt) {
 void DoDArchitecture::render() {
     constexpr float size = RADIUS;
 
-    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+    for (int i = 0; i < activeCount; ++i) {
         Vector2 pos = positions[i];
         Color col = colors[i];
 
@@ -142,7 +167,7 @@ void DoDArchitecture::render() {
                 DrawPoly(pos, 3, size, 60.0f, col);
                 break;
             }
-            default: 
+            default:
                 break;
         }
     }

@@ -2,7 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include "raylib.h"
-#include "IArchitecture.h"
+#include "../IArchitecture.h"
 
 enum ShapeType : uint8_t { SQUARE = 0, CIRCLE, TRIANGLE, STAR, COUNT };
 
@@ -27,6 +27,8 @@ private:
     static constexpr float DIAMETER = RADIUS * 2.0f;
     static constexpr float DIAMETER_SQ = DIAMETER * DIAMETER;
 
+    int activeCount=1000;
+
     std::vector<Vector2> positions;
     std::vector<Vector2> velocities;
     std::vector<Color> colors;
@@ -39,10 +41,9 @@ private:
     void Collide(Vector2& pos1, Vector2& vel1, Vector2& pos2, Vector2& vel2);
 
 public:
-    DoDArchitecture(int width = 1200, int height = 800);
-    ~DoDArchitecture() override = default;
-
-    void init();
-    void update(float dt);
-    void render();
+    void initialize(int initialCount, int screenWidth, int screenHeight) override;
+    void update(float dt,float speedMultiplier) override;
+    void render() override;
+    void setObjectCount(int newCount) override;
+    size_t getMemoryUsageBytes() override;
 };
