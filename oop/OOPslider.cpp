@@ -1,5 +1,5 @@
 
-#include "oopslider.h"
+#include "OOPslider.h"
 #include "Circle.h"
 #include "Square.h"
 #include "Triangle.h"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void oopslider::initialize(int initialCount, int width, int height)
+void OOPslider::initialize(int initialCount, int width, int height)
 {
 
     this->screenWidth = width;
@@ -17,7 +17,7 @@ void oopslider::initialize(int initialCount, int width, int height)
 }
 
 
-void oopslider::setObjectCount(int count) {
+void OOPslider::setObjectCount(int count) {
     if (count < 0) count = 0;
     if (count > 100000) count = 100000;
 
@@ -63,7 +63,7 @@ void oopslider::setObjectCount(int count) {
 }
 
 
-void oopslider::update(float deltaTime, float speedMultiplier)
+void OOPslider::update(float deltaTime, float speedMultiplier)
 {
     for (auto& object : objects)
     {
@@ -73,14 +73,14 @@ void oopslider::update(float deltaTime, float speedMultiplier)
 
 
 
-void oopslider::render() {
+void OOPslider::render() {
     for (auto& object : objects) {
         object->render();
     }
 }
 
 //urmeaza
-size_t oopslider::getMemoryUsageBytes() {
+size_t OOPslider::getMemoryUsageBytes() {
     return 0;
 }
 

@@ -46,7 +46,7 @@ add_executable(DOD_TowerDefense main.cpp
         oop/Square.h
         oop/Triangle.h
         oop/Star.h
-        oop/oopslider.h
-        oop/oopslider.cpp)
+        oop/OOPslider.h
+        oop/OOPslider.cpp)
 
 target_link_libraries(DOD_TowerDefense PRIVATE raylib raylib_imgui)

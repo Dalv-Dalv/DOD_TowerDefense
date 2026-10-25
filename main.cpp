@@ -7,7 +7,7 @@
 #include "UIManager.h"
 
 //rares
-#include "oop/oopslider.h"
+#include "oop/OOPslider.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ int main() {
 
 
     //rares
-    oopslider simulation;
+    OOPslider simulation;
     simulation.initialize(uiManager.getObjectCount(), screenWidth, screenHeight);
 
     uiManager.onObjectCountChanged([&simulation](int count)

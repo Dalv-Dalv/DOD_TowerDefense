@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class oopslider : public IArchitecture
+class OOPslider : public IArchitecture
 {
 
 private:
