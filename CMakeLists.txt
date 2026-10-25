@@ -40,6 +40,14 @@ add_executable(DOD_TowerDefense main.cpp
         UIManager.cpp
         UIManager.h
         IArchitecture.h
-        dod/DODArchitecture.cpp)
+        dod/DODArchitecture.cpp
+        oop/Object.h
+        oop/Shape.h
+        oop/Circle.h
+        oop/Square.h
+        oop/Triangle.h
+        oop/Star.h
+        oop/OOPslider.h
+        oop/OOPslider.cpp)
 
 target_link_libraries(DOD_TowerDefense PRIVATE raylib raylib_imgui)
