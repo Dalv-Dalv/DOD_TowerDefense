@@ -142,7 +142,13 @@ void DoDArchitecture::update(float dt, float speedMultiplier) {
 void DoDArchitecture::render() {
     constexpr float size = RADIUS;
 
-    for (int i = 0; i < activeCount; ++i) {
-        RenderShapedObject(positions[i], shapes[i], colors[i], size);
+    for (int type = 0; type < 4; ++type) {
+        ShapeType currentType = static_cast<ShapeType>(type);
+
+        for (int i = 0; i < activeCount; ++i) {
+            if (shapes[i] == currentType) {
+                RenderShapedObject(positions[i], shapes[i], colors[i], size);
+            }
+        }
     }
 }

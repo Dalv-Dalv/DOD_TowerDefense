@@ -9,6 +9,7 @@
 //rares
 #include "DoD/DoDArchitecture.h"
 #include "OOP/OOPArchitecture.h"
+#include "Shared/RenderUtils.h"
 
 using namespace std;
 
@@ -16,6 +17,8 @@ int main() {
     constexpr int screenWidth = 1200;
     constexpr int screenHeight = 800;
     InitWindow(screenWidth, screenHeight, "DOD_TowerDefense");
+
+    InitRenderResources();
 
     UIManager uiManager;
     uiManager.initialize();
