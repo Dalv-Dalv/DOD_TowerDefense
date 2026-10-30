@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 
+#include "raymath.h"
 #include "../Shared/RenderUtils.h"
 
 void SimpleGrid::Clear() {
@@ -91,9 +92,25 @@ void DoDArchitecture::update(float dt, float speedMultiplier) {
     float effectiveDt = dt * speedMultiplier;
     grid.Clear();
 
+    auto mousePos = GetMousePosition();
+    constexpr float mouseRadius = 200;
+
     for (int i = 0; i < activeCount; ++i) {
         positions[i].x += velocities[i].x * effectiveDt;
         positions[i].y += velocities[i].y * effectiveDt;
+
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+            Vector2 direction = Vector2Subtract(mousePos, positions[i]);
+            float magnitude = Vector2Length(direction);
+
+            float multiplier = effectiveDt * 400 / magnitude;
+            if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) multiplier *= -1;
+
+            if (magnitude < mouseRadius) {
+                velocities[i].x += direction.x * multiplier;
+                velocities[i].y += direction.y * multiplier;
+            }
+        }
 
         if (positions[i].x <= RADIUS) {
             positions[i].x = RADIUS;
