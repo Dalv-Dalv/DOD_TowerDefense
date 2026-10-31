@@ -54,7 +54,7 @@ int main() {
         float deltaTime = GetFrameTime();
 
         BeginDrawing();
-        ClearBackground(WHITE);
+        DrawRectangle(0, 0, screenWidth, screenHeight, (Color){ 255, 255, 255, 10 });
 
         if (simulation != nullptr) {
             simulation->update(deltaTime, simSpeed);
