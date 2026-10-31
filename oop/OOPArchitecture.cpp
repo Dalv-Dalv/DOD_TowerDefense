@@ -40,7 +40,7 @@ void OOPArchitecture::setObjectCount(int count) {
 
         Color color = ColorFromHSV(GetRandomValue(0, 359), 0.8f, 0.9f);
 
-        float size = GetRandomValue(2, 4);
+        constexpr float size = 1.5;
         int shape = GetRandomValue(0, 3);
 
         switch (shape) {
@@ -80,8 +80,14 @@ void OOPArchitecture::update(float deltaTime, float speedMultiplier) {
 
 
 void OOPArchitecture::render() {
-    for (auto &object: objects) {
-        object->render();
+    for (int type = 0; type < 4; ++type) {
+        ShapeType currentType = static_cast<ShapeType>(type);
+
+        for (auto &object: objects) {
+            if (object->getShapeType() == currentType) {
+                object->render();
+            }
+        }
     }
 }
 

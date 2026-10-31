@@ -42,6 +42,9 @@ public:
 
     virtual float getCollisionRadius() const = 0;
 
+    ShapeType getShapeType() const {
+        return shape;
+    }
 
     virtual void render() const = 0;
 
