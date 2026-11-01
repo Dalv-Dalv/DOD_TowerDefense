@@ -6,6 +6,8 @@
 #include "raymath.h"
 #include "../Shared/RenderUtils.h"
 
+#include "../Shared/SpeedColor.h"
+
 void SimpleGrid::Clear() {
     std::fill(count, count + TOTAL_CELLS, 0);
 }
@@ -154,6 +156,12 @@ void DoDArchitecture::update(float dt, float speedMultiplier) {
             }
         }
     }
+
+    //culoare
+    for (int i = 0; i < activeCount; i++) {
+        colors[i] = GetSpeedColor(velocities[i], speedMultiplier);
+    }
+
 }
 
 void DoDArchitecture::render() {
