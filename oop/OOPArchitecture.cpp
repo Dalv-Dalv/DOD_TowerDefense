@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "raymath.h"
+
 using namespace std;
 
 void OOPArchitecture::initialize(int initialCount, int width, int height) {
@@ -65,18 +67,46 @@ void OOPArchitecture::update(float deltaTime, float speedMultiplier) {
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
 
+    float effectiveDt = deltaTime * speedMultiplier;
+
+    Vector2 mousePos = GetMousePosition();
+    constexpr float mouseRadius = 200.0f;
+
+    bool leftClick = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+    bool rightClick = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
+
     for (auto &object: objects) {
         object->update(deltaTime, speedMultiplier);
         object->handleWallCollision(screenWidth, screenHeight);
-    }
 
-    buildGrid();
-    checkCollisions();
+        if (leftClick || rightClick) {
+            Vector2 direction = Vector2Subtract(mousePos, object->getPosition());
+            float magnitude = Vector2Length(direction);
 
-    for (auto& object : objects) {
+            if (magnitude > 0.0001f && magnitude < mouseRadius) {
+                float multiplier = effectiveDt * 400.0f / magnitude;
+
+                if (rightClick)
+                    multiplier *= -1;
+
+                Vector2 movement = object->getMovement();
+
+                movement.x += direction.x * multiplier;
+                movement.y += direction.y * multiplier;
+
+                object->setMovement(movement);
+            }
+        }
         object->handleWallCollision(screenWidth, screenHeight);
     }
-}
+
+        buildGrid();
+        checkCollisions();
+
+        for (auto& object : objects) {
+            object->handleWallCollision(screenWidth, screenHeight);
+        }
+    }
 
 
 void OOPArchitecture::render() {
