@@ -40,6 +40,11 @@ public:
         movement = newMovement;
     }
 
+    //culoare
+    void setColor(Color newColor) {
+        color = newColor;
+    }
+
     virtual float getCollisionRadius() const = 0;
 
     ShapeType getShapeType() const {

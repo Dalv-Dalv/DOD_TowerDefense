@@ -4,6 +4,8 @@
 #include "Triangle.h"
 #include "Star.h"
 
+#include "../Shared/SpeedColor.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -98,6 +100,8 @@ void OOPArchitecture::update(float deltaTime, float speedMultiplier) {
             }
         }
         object->handleWallCollision(screenWidth, screenHeight);
+
+        object->setColor(GetSpeedColor(object->getMovement(), speedMultiplier));
     }
 
         buildGrid();
